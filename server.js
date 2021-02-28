@@ -20,13 +20,14 @@ const ws = new WebSocket.Server({ server });
 const rooms = new Map([['Chat', new Set(ws.clients)]]);
 
 const roomClients = (roomName, connection) => {
-  if (!rooms.has(roomName)) {
+  let room = rooms.get(roomName);
+  if (!room) {
     rooms.set(roomName, new Set([connection]));
+    room = rooms.get(roomName);
+  } else if (!room.has(connection)) {
+    room.add(connection);
   }
-  console.log(roomName);
-  console.log(rooms);
-  console.log(rooms.get(roomName).values());
-  return rooms.get(roomName).values();
+  return room.values();
 };
 
 ws.on('connection', (connection, req) => {
