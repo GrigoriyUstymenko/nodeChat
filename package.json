@@ -1,0 +1,12 @@
+{
+  "name": "nodechat",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "dependencies": {
+    "eslint": "^7.21.0",
+    "ws": "^7.4.2"
+  },
+  "license": "ISC"
+}
