@@ -1,26 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang = "en">
+<title>Chat</title>
+<head>
+    <meta charset="UTF-8">
+</head>
 <body>
-<h1>Chat</h1>
-<div id="chat"></div>
-<input id="msg" type="text">
+<h1 id = "header">Chat</h1>
+<div id = "chat"></div>
+<input id = "msg" type = "text">
+<br>
+<br>
+<br>
+<button id = "roomBtn">New Room</button>
 <style>
-    input { border: 1px solid green; }
+    input { border: 1px solid green }
+    button { text-align: center;
+        border: 1px solid green;
+        background-color: yellowgreen;
+        color: white;
+        font-size: 15px;
+        padding: 10px }
 </style>
 <script>
 
-  const CHAR_RETURN = 13;
+  const CHAR_RETURN = 'Enter';
 
   const socket = new WebSocket('ws://127.0.0.1:8000/chat');
   const chat = document.getElementById('chat');
   const msg = document.getElementById('msg');
+  const roomBtn = document.getElementById('roomBtn');
+  const roomHeader = document.getElementById('header');
+  let roomName = roomHeader.innerText;
   msg.focus();
 
   const writeLine = text => {
     const line = document.createElement('div');
     line.innerHTML = `<p>${text}</p>`;
     chat.appendChild(line);
-  };
+  }
 
   socket.onopen = () => {
     writeLine('connected');
@@ -35,13 +52,27 @@
   };
 
   msg.addEventListener('keydown', event => {
-    if (event.keyCode === CHAR_RETURN) {
-      const s = msg.value;
+    if (event.code === CHAR_RETURN) {
+      const send = {
+        roomName: roomName,
+        value: msg.value,
+      };
+      const s = JSON.stringify(send);
+      writeLine(msg.value);
       msg.value = '';
-      writeLine(s);
       socket.send(s);
     }
   });
+
+  roomBtn.addEventListener('click', event => {
+    const newName = prompt('Enter room name:');
+    if (newName) {
+      roomHeader.innerText = newName;
+      roomName = newName;
+    }
+  });
+
+  const d = 1;
 
 </script>
 </body>
